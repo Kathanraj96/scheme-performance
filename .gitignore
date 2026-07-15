@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+# Fetched artifacts (reproducible; written to the data contract tree in prod).
+/data/
+/downloads/
+performance_data*.csv

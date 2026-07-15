@@ -1,10 +1,29 @@
+"""AMFI fund-performance registry fetcher.
+
+Published CLI surface (the Orchestrator's ``refresh_performance`` contract):
+
+    python run.py --output <path>
+
+Run from this directory it downloads the AMFI performance dataset and writes
+``performance_data.csv`` to exactly ``<path>``. Invoked without ``--output`` it
+keeps its in-repo default for standalone use.
+"""
+
 import os
 import csv
 import time
 import logging
+import argparse
 from datetime import datetime, timedelta
 import pandas as pd
-from .fetcher import fetch_filters, fetch_subcategories, is_holiday, fetch_performance
+
+# Import the network seam so the script runs both as a plain script
+# (``python run.py`` — no parent package) and when imported as part of a
+# package, without requiring installation.
+try:
+    from .fetcher import fetch_filters, fetch_subcategories, is_holiday, fetch_performance
+except ImportError:  # run as a top-level script: performance/ is on sys.path
+    from fetcher import fetch_filters, fetch_subcategories, is_holiday, fetch_performance
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -130,5 +149,21 @@ def run_download(output_path: str = None):
     df.to_csv(backup_path, index=False)
     logger.info(f"Saved backup dataset to: {backup_path}")
 
+def main(argv=None):
+    """Parse the published CLI surface and run the download."""
+    parser = argparse.ArgumentParser(
+        description="Download the AMFI fund-performance dataset to a CSV."
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default=None,
+        help="Path where performance_data.csv is written "
+        "(default: <repo>/data/performance_data.csv for standalone use).",
+    )
+    args = parser.parse_args(argv)
+    run_download(output_path=args.output)
+
+
 if __name__ == "__main__":
-    run_download()
+    main()
