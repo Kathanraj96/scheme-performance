@@ -67,6 +67,16 @@ the ingested set instead reports a truncated universe as full coverage.
 _Avoid_: "all schemes" (AMFI publishes performance only for schemes it
 classifies; NAVAll's plan universe is wider still)
 
+**Which universe this is.** Four contexts define one at different grains —
+NAVAll's plan universe (widest, includes wound-up), sdi-fetcher's active set
+(2,544), this one (2,083) and mf-fm-hist-fetch's Master Scheme set (1,949).
+This one is the **Platform Universe**'s denominator, and on a reason rather
+than by default: what it omits is almost exactly the fixed-maturity debt plans
+that have no analysis story — 220 of the 226 such schemes in the 2026-08
+refresh. See [root ADR-0007](../docs/adr/0007-the-platform-universe.md), which
+also names the 6 it carries anyway, and is why the rule is stated on the SID's
+declared fields rather than on this file's contents.
+
 ## Relationships
 
 - One **Report Date** per pull; a re-pull for the same date is a replacement
